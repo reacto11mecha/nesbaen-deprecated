@@ -1,7 +1,8 @@
 import React from "react";
+import loadable from "@loadable/component";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import LoginComponent from "./Components/LoginComponent";
+const LoginComponent = loadable(() => import("./Components/LoginComponent"));
 
 export default function App() {
   return (
