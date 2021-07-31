@@ -6,6 +6,8 @@ const cookieParser = require("cookie-parser");
 
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
 
+const { users } = require("./routes");
+
 require("./utils/connectdb");
 require("./strategies/Jwt");
 require("./strategies/Local");
@@ -32,5 +34,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cors(corsOptions));
 
 app.use(passport.initialize());
+
+app.use("/users", users);
 
 module.exports = app;
