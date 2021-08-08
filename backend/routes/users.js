@@ -13,27 +13,29 @@ const {
 } = require("../utils/authenticate");
 
 router.post("/signup", (req, res, next) => {
-  User.register(
-    new User({ username: req.body.username, name: req.body.name }),
-    req.body.password,
-    (err, user) => {
-      if (err) return res.status(500).send(err);
+  User.findOne({ username }).then((user) => {
+    if (!user) {
+      User.register(
+        new User({ username: req.body.username, name: req.body.name }),
+        req.body.password,
+        (err, user) => {
+          if (err) return res.status(500).send(err);
 
-      const token = getToken({ _id: user._id });
-      const refreshToken = getRefreshToken({ _id: user._id });
+          const token = getToken({ _id: user._id });
+          const refreshToken = getRefreshToken({ _id: user._id });
 
-      user.refreshToken.push({ refreshToken });
+          user.refreshToken.push({ refreshToken });
 
-      user.save((err, user) => {
-        if (err) {
-          res.status(500).send(err);
-        } else {
-          res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS);
-          res.send({ success: true, token });
+          user.save((error, user) => {
+            if (error) return res.json({ success: false, error });
+
+            res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS);
+            res.send({ success: true, token });
+          });
         }
-      });
+      );
     }
-  );
+  });
 });
 
 router.post("/login", passport.authenticate("local"), (req, res, next) => {
@@ -44,18 +46,18 @@ router.post("/login", passport.authenticate("local"), (req, res, next) => {
     (user) => {
       user.refreshToken.push({ refreshToken });
 
-      user.save((err, user) => {
-        if (err) return res.status(500).send(err);
+      user.save((error, user) => {
+        if (error) return res.json({ success: false, error });
 
         res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS);
-        res.send({ success: true, token });
+        res.json({ success: true, token });
       });
     },
     (err) => next(err)
   );
 });
 
-router.get("/me", verifyUser, (req, res) => res.send(req.user));
+router.get("/me", verifyUser, (req, res) => res.json(req.user));
 
 router.get("/logout", verifyUser, (req, res) => {
   const { signedCookies = {} } = req;
@@ -70,11 +72,11 @@ router.get("/logout", verifyUser, (req, res) => {
       if (tokenIndex !== -1)
         user.refreshToken.id(user.refreshToken[tokenIndex]._id).remove();
 
-      user.save((err, user) => {
-        if (err) return res.status(500).send(err);
+      user.save((error, user) => {
+        if (error) return res.json({ success: false, error });
 
         res.clearCookie("refreshToken", COOKIE_OPTIONS);
-        res.send({ success: true });
+        res.json({ success: true });
       });
     },
     (err) => next(err)
