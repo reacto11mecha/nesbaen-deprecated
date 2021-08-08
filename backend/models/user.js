@@ -22,6 +22,11 @@ const User = new Schema({
   refreshToken: {
     type: [Session],
   },
+  active: Boolean,
+  created_at: {
+    type: Date,
+    default: new Date(),
+  },
 });
 
 User.set("toJSON", {
@@ -31,6 +36,12 @@ User.set("toJSON", {
   },
 });
 
-User.plugin(passportLocalMongoose);
+User.plugin(passportLocalMongoose, {
+  usernameUnique: false,
+  findByUsername: function (model, queryParameters) {
+    queryParameters.active = true;
+    return model.findOne(queryParameters);
+  },
+});
 
 module.exports = mongoose.model("User", User);
