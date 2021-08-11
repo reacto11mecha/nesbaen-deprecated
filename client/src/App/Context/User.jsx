@@ -21,9 +21,21 @@ export default function UserProvider({ children }) {
     []
   );
 
-  const providerValue = useMemo(() => [userState, { submitLogin }], [
-    userState,
-  ]);
+  const verifyUser = useCallback(async () => {
+    await axios
+      .post("/users/refreshToken")
+      .then((res) => res.data)
+      .then(({ token }) => {
+        setUserState((prev) => ({ ...prev, token }));
+
+        setTimeout(verifyUser * 5 * 1000);
+      });
+  }, []);
+
+  const providerValue = useMemo(
+    () => [userState, { submitLogin, verifyUser }],
+    [userState]
+  );
 
   return (
     <UserContext.Provider value={providerValue}>
