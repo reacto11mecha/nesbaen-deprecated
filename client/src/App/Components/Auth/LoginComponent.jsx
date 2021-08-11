@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 
-import { UserContext } from "../Context/User";
+import { UserContext } from "../../Context/User";
 import styles from "./Styles/LoginComponent.module.css";
 
 const ErrorDanger = ({ message }) => (
@@ -51,7 +51,12 @@ export default function LoginComponent() {
                     <ErrorDanger message="Password is required" />
                   )}
                 </Form.Group>
-                <Button variant="primary" type="submit" className="mt-5">
+                <Button
+                  variant="primary"
+                  type="submit"
+                  className="mt-5"
+                  disabled={isSubmitting}
+                >
                   Submit
                 </Button>
               </Form>
