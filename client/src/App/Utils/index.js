@@ -1,3 +1,4 @@
 import ProtectedNotLoggedIn from "./ProtectedNotLoggedIn";
+import ProtectedMustLoggedIn from "./ProtectedMustLoggedIn";
 
-export { ProtectedNotLoggedIn };
+export { ProtectedNotLoggedIn, ProtectedMustLoggedIn };
