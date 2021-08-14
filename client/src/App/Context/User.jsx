@@ -12,7 +12,7 @@ export default function UserProvider({ children }) {
     async ({ email, password }) =>
       await axios
         .post(
-          "/users/login",
+          `${REACT_API_ENDPOINT}/users/login`,
           { username: email, password },
           { withCredentials: true }
         )
@@ -20,17 +20,6 @@ export default function UserProvider({ children }) {
         .then(({ token }) => setUserState((prev) => ({ ...prev, token }))),
     []
   );
-
-  const verifyUser = useCallback(async () => {
-    await axios
-      .post("/users/refreshToken")
-      .then((res) => res.data)
-      .then(({ token }) => {
-        setUserState((prev) => ({ ...prev, token }));
-
-        setTimeout(verifyUser * 5 * 1000);
-      });
-  }, []);
 
   const providerValue = useMemo(
     () => [userState, { submitLogin, verifyUser }],
