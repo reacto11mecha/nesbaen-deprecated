@@ -3,7 +3,7 @@ import UserProvider from "./Context/User";
 import loadable from "@loadable/component";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import { ProtectedNotLoggedIn } from "./Utils";
+import { ProtectedNotLoggedIn, ProtectedMustLoggedIn } from "./Utils";
 
 const AuthComponent = loadable(() => import("./Components/Auth"));
 
@@ -16,6 +16,10 @@ export default function App() {
             <p>Nesbaen</p>
           </Route>
           <ProtectedNotLoggedIn path="/auth" component={AuthComponent} />
+          <ProtectedMustLoggedIn
+            path="/"
+            component={() => <p>Halo APP, dah login</p>}
+          />
         </Switch>
       </UserProvider>
     </Router>
