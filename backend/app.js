@@ -1,6 +1,6 @@
 const cors = require("cors");
 const express = require("express");
-const passport = require("passport");
+const mongoose = require("mongoose");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
 
@@ -8,9 +8,19 @@ if (process.env.NODE_ENV !== "production") require("dotenv").config();
 
 const { users } = require("./routes");
 
-require("./utils/connectdb");
-require("./strategies/Jwt");
-require("./strategies/Local");
+mongoose
+  .connect(process.env.MONGO_DB_CONNECTION_STRING, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  })
+  .then((db) => {
+    console.log("DB CONNECTED");
+  })
+  .catch((err) => {
+    console.log(err);
+    process.exit();
+  });
 
 const whitelist = process.env.WHITELISTED_DOMAINS
   ? process.env.WHITELISTED_DOMAINS.split(",")
