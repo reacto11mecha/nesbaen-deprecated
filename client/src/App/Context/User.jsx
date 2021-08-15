@@ -9,22 +9,19 @@ export default function UserProvider({ children }) {
   const [userState, setUserState] = useState(initialState);
 
   const submitLogin = useCallback(
-    async ({ email, password }) =>
+    async (body) =>
       await axios
-        .post(
-          `${REACT_API_ENDPOINT}/users/login`,
-          { username: email, password },
-          { withCredentials: true }
-        )
+        .post(`${REACT_API_ENDPOINT}/users/login`, body, {
+          withCredentials: true,
+        })
         .then((res) => res.data)
         .then(({ token }) => setUserState((prev) => ({ ...prev, token }))),
     []
   );
 
-  const providerValue = useMemo(
-    () => [userState, { submitLogin, verifyUser }],
-    [userState]
-  );
+  const providerValue = useMemo(() => [userState, { submitLogin }], [
+    userState,
+  ]);
 
   return (
     <UserContext.Provider value={providerValue}>
