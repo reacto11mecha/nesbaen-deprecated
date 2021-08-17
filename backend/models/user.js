@@ -1,16 +1,8 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
 const regex = require("../utils/regex");
 
-const Session = new Schema({
-  refreshToken: {
-    type: String,
-    default: "",
-  },
-});
-
-const User = new Schema({
+const User = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
@@ -29,8 +21,16 @@ const User = new Schema({
       message: (props) => `${props.value} bukanlah nama yang valid!`,
     },
   },
-  refreshToken: {
-    type: [Session],
+  role: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Role",
+  },
+  class: {
+    grade: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Classess",
+    },
+    indexClass: Number,
   },
   active: {
     type: Boolean,
@@ -39,13 +39,6 @@ const User = new Schema({
   created_at: {
     type: Date,
     default: new Date(),
-  },
-});
-
-User.set("toJSON", {
-  transform: function (doc, ret, options) {
-    delete ret.refreshToken;
-    return ret;
   },
 });
 
