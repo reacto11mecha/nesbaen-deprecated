@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
 
+const { initialize } = require("./models");
 const { users } = require("./routes");
 
 mongoose
@@ -16,6 +17,7 @@ mongoose
   })
   .then((db) => {
     console.log("DB CONNECTED");
+    initialize();
   })
   .catch((err) => {
     console.log(err);
@@ -42,8 +44,6 @@ app.use(compression());
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cors(corsOptions));
-
-app.use(passport.initialize());
 
 app.use("/users", users);
 
