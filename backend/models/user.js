@@ -21,10 +21,12 @@ const User = new mongoose.Schema({
       message: (props) => `${props.value} bukanlah nama yang valid!`,
     },
   },
-  role: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Role",
-  },
+  roles: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
+    },
+  ],
   class: {
     grade: {
       type: mongoose.Schema.Types.ObjectId,
