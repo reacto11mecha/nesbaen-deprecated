@@ -13,6 +13,10 @@ const User = new mongoose.Schema({
     },
     required: [true, "Masukkan email terlebih dahulu"],
   },
+  password: {
+    type: String,
+    required: true,
+  },
   name: {
     type: String,
     required: [true, "Masukkan nama lengkap!"],
